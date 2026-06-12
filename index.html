@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Song Brief System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom Fonts and Gradient Text */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0e;
+      color: #d1d5db;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+   .gradient-text {
+  background: linear-gradient(90deg, #dc267f, #1098ad, #4ea8de);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* fallback */
+  color: transparent;    /* fallback */
+}
+
+.gradient-text-pink-blue {
+  background: linear-gradient(90deg, #ea53b3, #6a66f4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* fallback */
+  color: transparent;    /* fallback */
+}
+
+
+    /* Navbar buttons */
+    .btn-primary {
+      background-color: #e6004c;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #b0003a;
+    }
+    /* Card hover */
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.4);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgb(237 0 83 / 0.75);
+    }
+    .btn-outline-white {
+      border: 2px solid #fff;
+      color: #fff;
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .btn-outline-white:hover {
+      background-color: #e6004c;
+      border-color: #e6004c;
+      color: #fff;
+    }
+    /* Gradient Background Sections */
+    .header-gradient {
+      background: 
+        radial-gradient(circle at 20% 40%, #dc267f88, transparent 50%),
+        radial-gradient(circle at 80% 60%, #1098adcc, transparent 50%);
+    }
+    .collab-bg {
+      background:
+        linear-gradient(90deg, #1e293b, #312e4e);
+      position: relative;
+      overflow: hidden;
+    }
+    .collab-bg::before,
+    .collab-bg::after {
+      content: '';
+      position: absolute;
+      width: 140vw;
+      height: 160px;
+      border-radius: 50% / 100%;
+      z-index: 0;
+      left: -20vw;
+      filter: blur(40px);
+    }
+    .collab-bg::before {
+      top: 25px;
+      background: linear-gradient(90deg, #ea53b3, #6a66f4);
+      opacity: 0.8;
+      animation: pulseBG 8s ease-in-out infinite alternate;
+    }
+    .collab-bg::after {
+      bottom: 20px;
+      background: linear-gradient(90deg, #1098ad, #dc267f);
+      opacity: 0.7;
+      animation: pulseBG 9.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseBG {
+      0% {opacity: 0.4;}
+      100% {opacity: 0.9;}
+    }
+    /* Carousel Buttons */
+    .carousel-btn {
+      background: none;
+      border: 2px solid #444;
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      color: #ccc;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .carousel-btn:hover {
+      background-color: #e6004c;
+      border-color: #e6004c;
+      color: white;
+    }
+    /* Gradient Scrollbar for carousels */
+    ::-webkit-scrollbar {
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, #ea53b3, #6a66f4);
+      border-radius: 4px;
+    }
+    /* Form inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="file"],
+    select {
+      background-color: #1f2937;
+      border: 1.5px solid #374151;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      color: #e5e7eb;
+      transition: border-color 0.3s ease;
+      width: 100%;
+      font-size: 1rem;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="file"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #e6004c;
+      box-shadow: 0 0 8px #e6004caa;
+    }
+    button.btn-gradient {
+      background: linear-gradient(90deg, #4e6ef2, #a94dae);
+      color: #fff;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 0.75rem;
+      border: none;
+      cursor: pointer;
+      transition: filter 0.3s ease;
+    }
+    button.btn-gradient:hover {
+      filter: brightness(1.2);
+    }
+    a.link-faded {
+      font-size: 0.875rem;
+      color: #9ca3af;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a.link-faded:hover {
+      color: #e6004c;
+    }
+    /* Login and Signup panels */
+    .panel {
+      background: rgba(0,0,0,0.4);
+      border-radius: 1rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 40px #4e6ef2aa;
+      padding: 2rem;
+      max-width: 360px;
+      width: 100%;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .circle-bg {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.5;
+      mix-blend-mode: screen;
+      z-index: 0;
+    }
+    .circle-1 {
+      top: -4rem;
+      left: -5rem;
+      width: 180px;
+      height: 180px;
+      background: #6a66f4;
+      opacity: 0.6;
+      animation: pulseBG 8s ease-in-out infinite alternate;
+    }
+    .circle-2 {
+      top: 10rem;
+      right: -6rem;
+      width: 160px;
+      height: 160px;
+      background: #ea53b3;
+      opacity: 0.7;
+      animation: pulseBG 6.5s ease-in-out infinite alternate;
+    }
+    .small-icon {
+      width: 2rem;
+      height: 2rem;
+      filter: drop-shadow(0 0 1px #ccc);
+      cursor: pointer;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    
+    /* ADVANCED 3D BACKGROUND ANIMATION */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .shape {
+      position: absolute;
+      opacity: 0.2;
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: floatShape 25s infinite linear;
+    }
+    
+    @keyframes floatShape {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20vw, 40vh) rotate(90deg);
+      }
+      50% {
+        transform: translate(40vw, 10vh) rotate(180deg);
+      }
+      75% {
+        transform: translate(60vw, 50vh) rotate(270deg);
+      }
+      100% {
+        transform: translate(0, 0) rotate(360deg);
+      }
+    }
+    
+    .audio-wave {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: -1;
+      opacity: 0.1;
+      background: linear-gradient(transparent, #6a66f4, #ea53b3, transparent);
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0,10 C20,8 30,12 50,12 C70,12 80,8 100,10 L100,20 L0,20 Z" fill="white"/></svg>');
+      mask-size: 100% 100%;
+      animation: waveAnimation 15s ease-in-out infinite;
+    }
+    
+    @keyframes waveAnimation {
+      0%, 100% {
+        transform: scaleY(1);
+      }
+      50% {
+        transform: scaleY(1.5);
+      }
+    }
+    
+    .pulse-ring {
+      position: fixed;
+      border: 2px solid rgba(234, 83, 179, 0.3);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pulseRing 4s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    }
+    
+    @keyframes pulseRing {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+    
+    .floating-note {
+      position: fixed;
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+      animation: floatNote 20s linear infinite;
+      z-index: -1;
+    }
+    
+    @keyframes floatNote {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="relative">
+
+  <!-- 3D Background Elements -->
+  <canvas id="particle-canvas"></canvas>
+  <div class="floating-shapes" id="floating-shapes"></div>
+  <div class="audio-wave"></div>
+  <div id="pulse-rings"></div>
+  <div id="floating-notes"></div>
+
+  <!-- NAVBAR -->
+  <header class="fixed left-0 right-0 top-0 z-30 bg-black bg-opacity-30 backdrop-blur-sm shadow-lg">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <a href="#" class="text-2xl font-extrabold text-white flex items-center gap-1 select-none">
+        Sh<span class="text-pink-600">o</span>se
+      </a>
+      <ul class="hidden md:flex gap-10 text-white font-semibold">
+        <li><a href="#home" class="hover:text-pink-600 transition">Home</a></li>
+        <li><a href="#new-arrivals" class="hover:text-pink-600 transition">New arrivals</a></li>
+        <li><a href="#download" class="hover:text-pink-600 transition">Download</a></li>
+        <li><a href="#pricing" class="hover:text-pink-600 transition">Artist</a></li>
+        <li><a href="index4.html" class="hover:text-pink-600 transition">Dashboard</a></li>
+      </ul>
+      <div class="hidden md:flex gap-4 items-center">
+        <a href="index3.html" class="text-gray-300 hover:text-white transition cursor-pointer">Log in</a>
+        <a href="index2.html" class="btn-primary px-4 py-2 rounded-full font-semibold">Register </a>
+      </div>
+      <!-- Hamburger for mobile -->
+      <div class="md:hidden">
+        <button id="menu-btn" class="text-white focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2"><path stroke-linecap="round"
+          stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+      </div>
+    </nav>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden bg-black bg-opacity-90 backdrop-blur-md text-white px-6 py-4">
+      <ul class="flex flex-col gap-3 font-semibold">
+        <li><a href="#home" class="block">Home</a></li>
+        <li><a href="#new-arrivals" class="block">New arrivals</a></li>
+        <li><a href="#download" class="block">Download</a></li>
+        <li><a href="#pricing" class="block">Pricing</a></li>
+      </ul>
+      <div class="mt-3 flex gap-2">
+        <a href="#login" class="flex-1 text-center rounded-lg border border-pink-600 px-3 py-2">Log in</a>
+        <button class="btn-primary flex-1 rounded-lg font-semibold">Register</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="header-gradient relative pt-[96px] min-h-[600px] flex flex-col md:flex-row max-w-7xl mx-auto p-6 md:p-12 items-center">
+    <div class="flex-1 text-left max-w-xl">
+      <h1 class="text-5xl md:text-6xl font-extrabold leading-tight text-white select-none">
+        Welcome To Song<br />
+        Brief System!
+      </h1>
+      <p class="text-gray-400 text-lg mt-4 select-none">Create, pitch, or find your next song</p>
+     <a 
+    href="index2.html" 
+    class="btn-primary mt-8 px-8 py-3 rounded-lg font-semibold select-none inline-block text-center"
+>
+    Signup
+</a>
+
+    </div>
+    <div class="flex-1 mt-8 md:mt-0 relative flex justify-center md:justify-end">
+      <img 
+        src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/69ccb144-b5ed-457c-a82a-15295e631f07.png"
+        alt="Young woman with expressive face wearing a colorful vintage windbreaker jacket holding headphones over ears, looking confident, studio lighting with pink and blue gradient backdrop"
+        class="rounded-xl shadow-2xl max-h-[480px] md:max-h-[600px] object-contain transform rotate-[9deg]" onerror="this.style.display='none'" />
+    </div>
+  </section>
+
+  <!-- COLLABORATE SECTION -->
+  <section id="new-arrivals" class="collab-bg relative max-w-7xl mx-auto mt-24 px-6 py-16 rounded-xl select-none">
+    <h2 class="text-4xl font-extrabold mb-12 text-center max-w-4xl mx-auto text-white">
+      Collab<span class="gradient-text-pink-blue">rate With Producers</span>
+    </h2>
+    <div class="relative flex overflow-x-auto gap-6 max-w-6xl mx-auto px-10">
+      <!-- Four producer cards -->
+      <div class="min-w-[280px] max-w-[280px] flex-none rounded-xl overflow-hidden shadow-lg bg-white">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/cdbe4310-268b-44c9-92ab-34c45b567fd1.png" 
+          alt="Confident young woman with hair in bun wearing plain white t-shirt looking and smiling slightly at the camera on white background" 
+          class="w-full h-full object-cover" />
+      </div>
+      <div class="min-w-[280px] max-w-[280px] flex-none rounded-xl overflow-hidden shadow-lg bg-white">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/952e31f2-174d-4cab-8caa-6cb4647a4697.png" 
+          alt="Mature man with glasses in collared green shirt with facial hair smiling and looking slightly to side on white background" 
+          class="w-full h-full object-cover" />
+      </div>
+      <div class="min-w-[280px] max-w-[280px] flex-none rounded-xl overflow-hidden shadow-lg bg-white">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6d3696a4-bb3b-423a-a910-df80b49d2327.png" 
+          alt="Professional middle-aged business man with glasses wearing blue suit and tie looking confident facing camera on white background" 
+          class="w-full h-full object-cover" />
+      </div>
+      <div class="min-w-[280px] max-w-[280px] flex-none rounded-xl overflow-hidden shadow-lg bg-white">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/eb759457-76c5-4d26-868f-f3277a10ea76.png" 
+          alt="Woman with short curly hair wearing black top with shadow and light patches on face looking serious on white background" 
+          class="w-full h-full object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <!-- MUSIC LIBRARIES SECTION -->
+  <section id="download" class="max-w-7xl mx-auto mt-24 px-6 py-8 select-none">
+    <div class="max-w-4xl">
+      <h2 class="text-4xl font-extrabold text-white leading-tight mb-4 select-none">
+        Explore Endless <br /> Music Libraries
+      </h2>
+      <p class="text-gray-400 leading-relaxed mb-6 max-w-lg">
+        Say goodbye to interruptions and enjoy uninterrupted music streaming. With our ad-free platform, you'll have access to millions of songs.
+      </p>
+    </div>
+    <div class="flex items-center justify-between max-w-6xl mx-auto">
+      <div class="flex gap-4 overflow-x-auto py-4 scrollbar-hide">
+        <!-- 4 music cards -->
+        <div class="card bg-gradient-to-tr from-[#1b3352]/80 to-[#0a121d]/80 w-48 min-w-[192px] rounded-xl relative overflow-hidden shadow-md">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/5a95664f-d6b1-4b42-bdb5-86a055b75a37.png" 
+            alt="Illustrative hip hop album cover in dark tones featuring a hooded person with headset, urban vibe" 
+            class="object-cover w-full h-56 rounded-t-xl" />
+           <button aria-label="Play Hip Hop playlist" class="absolute top-4 left-4 bg-white bg-opacity-90 rounded-full p-2">
+            <svg fill="#111827" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+           </button>
+          <div class="p-3 relative z-10 select-none">
+            <h3 class="text-white font-semibold text-lg">Hip Hop</h3>
+            <p class="text-gray-300 text-sm">312 songs</p>
+          </div>
+        </div>
+        <div class="card bg-gradient-to-tr from-[#16222e]/80 to-[#3a2737]/80 w-48 min-w-[192px] rounded-xl relative overflow-hidden shadow-md">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/94d0773d-7c7c-4531-a674-5ac5975a0c08.png" 
+            alt="Artistic soul music cover art showing dramatic shadows and doorway with atmospheric lighting" 
+            class="object-cover w-full h-56 rounded-t-xl" />
+          <button aria-label="Play Soul playlist" class="absolute top-4 left-4 bg-white bg-opacity-90 rounded-full p-2">
+            <svg fill="#111827" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+          </button>
+          <div class="p-3 relative z-10 select-none">
+            <h3 class="text-white font-semibold text-lg">Soul</h3>
+            <p class="text-gray-300 text-sm">814 songs</p>
+          </div>
+        </div>
+        <div class="card bg-gradient-to-tr from-[#1d4654]/80 to-[#305b38]/80 w-48 min-w-[192px] rounded-xl relative overflow-hidden shadow-md">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9e7be484-6b69-4a0f-9765-2da8cd3eab83.png" 
+            alt="Aerial view of beach and sea waves with lush greenery featured on the cover of summer hits music album" 
+            class="object-cover w-full h-56 rounded-t-xl" />
+          <button aria-label="Play Summer Hits playlist" class="absolute top-4 left-4 bg-white bg-opacity-90 rounded-full p-2">
+            <svg fill="#111827" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+          </button>
+          <div class="p-3 relative z-10 select-none">
+            <h3 class="text-white font-semibold text-lg">Summer Hits</h3>
+            <p class="text-gray-300 text-sm">375 songs</p>
+          </div>
+        </div>
+        <div class="card bg-gradient-to-tr from-[#2a3f63]/80 to-[#3f1e48]/80 w-48 min-w-[192px] rounded-xl relative overflow-hidden shadow-md">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1fc552a4-5d54-4c35-8c9b-4c18666a3e42.png" 
+            alt="Abstract cool electronic themed R&B music album cover in dark blues and purples" 
+            class="object-cover w-full h-56 rounded-t-xl" />
+          <button aria-label="Play R B playlist" class="absolute top-4 left-4 bg-white bg-opacity-90 rounded-full p-2">
+            <svg fill="#111827" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+          </button>
+          <div class="p-3 relative z-10 select-none">
+            <h3 class="text-white font-semibold text-lg">R&B</h3>
+            <p class="text-gray-300 text-sm">731 songs</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-3 ml-6">
+        <button aria-label="Previous" class="carousel-btn" id="prev-btn">&larr;</button>
+        <button aria-label="Next" class="carousel-btn" id="next-btn">&rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRENDING ARTISTS -->
+  <section id="pricing" class="max-w-7xl mx-auto mt-24 px-6 py-10 select-none">
+    <h2 class="text-4xl font-extrabold text-white mb-4 select-none">Trending Artists</h2>
+    <p class="text-gray-400 max-w-4xl mx-auto mb-14 select-none">
+      Discover the hottest and most popular artists in the industry today. Keep your music creation fresh and up-to-date with our curated selection of trending musicians, bands, and singers. From emerging talents to established stars, we've got you covered.
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 max-w-6xl mx-auto">
+      <!-- Artist cards -->
+      <div class="flex flex-col items-center gap-3 bg-gradient-to-tr from-[#2e3143] to-[#11131a] rounded-xl py-6 shadow-lg">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/988f4d2b-c72c-41ba-9d66-44852e1edf10.png" alt="Photograph portrait of artist A. R. Rahman in black and white" class="rounded-full object-cover w-28 h-28" />
+        <h3 class="text-xl font-semibold text-white">A. R. Rahman</h3>
+        <p class="text-gray-400 text-sm">16 songs</p>
+        <a href="#" class="flex items-center text-pink-600 hover:text-pink-400 font-semibold text-sm gap-1 select-none">Explore <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="flex flex-col items-center gap-3 bg-gradient-to-tr from-[#2e3143] to-[#11131a] rounded-xl py-6 shadow-lg">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/caad40c6-46e2-41d4-8807-1948363cdbbf.png" alt="Photograph portrait of artist Arijit Singh smiling in a casual setting" class="rounded-full object-cover w-28 h-28" />
+        <h3 class="text-xl font-semibold text-white">Arijit Singh</h3>
+        <p class="text-gray-400 text-sm">32 songs</p>
+        <a href="#" class="flex items-center text-pink-600 hover:text-pink-400 font-semibold text-sm gap-1 select-none">Explore <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="flex flex-col items-center gap-3 bg-gradient-to-tr from-[#2e3143] to-[#11131a] rounded-xl py-6 shadow-lg">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/76fe2df3-11d7-4689-9690-044a39cb7fa3.png" alt="Portrait of artist Yo Yo Honey Singh wearing leather jacket in studio" class="rounded-full object-cover w-28 h-28" />
+        <h3 class="text-xl font-semibold text-white">Yo Yo Honey Singh</h3>
+        <p class="text-gray-400 text-sm">26 songs</p>
+        <a href="#" class="flex items-center text-pink-600 hover:text-pink-400 font-semibold text-sm gap-1 select-none">Explore <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="flex flex-col items-center gap-3 bg-gradient-to-tr from-[#2e3143] to-[#11131a] rounded-xl py-6 shadow-lg">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f20b4082-46a6-4989-9f4b-aeeb4a93e013.png" alt="Portrait of artist Sidhu Moose Wala in outdoor setting wearing turban and jacket" class="rounded-full object-cover w-28 h-28" />
+        <h3 class="text-xl font-semibold text-white">Sidhu Moose Wala</h3>
+        <p class="text-gray-400 text-sm">23 songs</p>
+        <a href="#" class="flex items-center text-pink-600 hover:text-pink-400 font-semibold text-sm gap-1 select-none">Explore <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="flex flex-col items-center gap-3 bg-gradient-to-tr from-[#2e3143] to-[#11131a] rounded-xl py-6 shadow-lg">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/5a7acacc-0324-49a7-af72-fa7a83bca02b.png" alt="Portrait studio photograph of artist Shreya Ghoshal in white dress" class="rounded-full object-cover w-28 h-28" />
+        <h3 class="text-xl font-semibold text-white">Shreya Ghoshal</h3>
+        <p class="text-gray-400 text-sm">11 songs</p>
+        <a href="#" class="flex items-center text-pink-600 hover:text-pink-400 font-semibold text-sm gap-1 select-none">Explore <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+    <div class="flex justify-center mt-10">
+      <button class="btn-primary px-6 py-2 rounded-full font-semibold shadow-lg select-none">See All (382)</button>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER SIGNUP -->
+  <section id="newsletter" class="max-w-7xl mx-auto mt-24 px-6 py-16 rounded-xl relative header-gradient flex flex-col md:flex-row items-center overflow-hidden">
+    <div class="flex-1 max-w-3xl text-white select-none">
+      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight max-w-lg mb-4">Don’t Miss A <span class="text-gray-400">Beat!</span></h2>
+      <p class="max-w-md leading-relaxed text-gray-300 mb-8">
+        Don't miss out on the latest music news, exclusive offers and promotions, and new releases by signing up for our newsletter.
+        Stay in the loop with the freshest music and be the first to know about upcoming events, artist spotlights, and more. Sign up now and never miss a beat!
+      </p>
+      <form class="flex items-center max-w-md">
+        <input 
+          type="email" 
+          placeholder="Email" 
+          aria-label="Email signup input" 
+          class="rounded-r-none focus:ring-0 focus:outline-none"
+          required
+          />
+        <button aria-label="Submit email signup" type="submit" class="bg-pink-600 hover:bg-pink-700 px-4 rounded-l-none text-white w-12 h-12 flex items-center justify-center cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" 
+            class="w-6 h-6">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </div>
+    <div class="flex-1 flex justify-center md:justify-end mt-8 md:mt-0 relative max-w-lg">
+      <img 
+        src="" 
+        alt="Black wireless headphones angled to right with soft purple and blue gradient background, modern tech style" 
+        class="max-w-full max-h-[320px] object-contain" onerror="this.style.display='none'" />
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="max-w-7xl mx-auto mt-20 px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-8 select-none text-gray-400">
+    <div class="flex items-center gap-4">
+      <span class="text-2xl font-extrabold text-white flex items-center gap-1 select-none">
+        Sh<span class="text-pink-600">o</span>se
+      </span>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 flex-1 w-full max-w-4xl">
+      <div class="flex flex-col space-y-1">
+        <span class="font-semibold text-white mb-2">Get started</span>
+        <a href="#" class="link-faded">Download app</a>
+        <a href="#" class="link-faded">New releases</a>
+        <a href="#" class="link-faded">Originals</a>
+        <a href="#" class="link-faded">Plans</a>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="font-semibold text-white mb-2">Account</span>
+        <a href="#" class="link-faded">Sign in</a>
+        <a href="#" class="link-faded">Platform</a>
+        <a href="#" class="link-faded">Support</a>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="font-semibold text-white mb-2">Pride</span>
+        <a href="#" class="link-faded">Partners</a>
+        <a href="#" class="link-faded">Careers</a>
+        <a href="#" class="link-faded">Press</a>
+      </div>
+      <div class="flex flex-col justify-center">
+        <button class="btn-primary px-6 py-2 rounded-full font-semibold">Signup</button>
+      </div>
+    </div>
+    <div class="flex gap-5 mt-6 md:mt-0">
+      <a href="https://youtu.be/kXHiIxx2atA?si=ubE-FZPTljAbClvZ" aria-label="YouTube social link" class="text-gray-400 hover:text-pink-600 transition"><svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M19.615 3.184c-.718-.718-1.722-1.142-2.852-1.142h-8.53A3.478 3.478 0 005.24 3.13 3.307 3.307 0 003.65 5.77c-.117.598-.18 1.206-.18 1.822v6.607c0 2.923 2.788 3.646 4.783 3.646h5.296c4.073 0 4.551-2.64 4.551-6.355v-5.954a3.985 3.985 0 00-1.975-3.361zm-5.155 1.96l3.336 1.68-3.336 1.681v-3.361z"></path></svg></a>
+      <a href="https://x.com/spotify?s=11" aria-label="Twitter social link" class="text-gray-400 hover:text-pink-600 transition"><svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M23 3a10.9 10.9 0 01-3.14.86 4.48 4.48 0 001.96-2.54 9.14 9.14 0 01-2.88 1.12A4.52 4.52 0 0016.09 2c-2.36 0-4.28 1.97-4.28 4.40 0 .35.04.7.12 1a12.87 12.87 0 01-9.37-4.75 4.3 4.3 0 00-.58 2.20c0 1.50.75 2.83 1.88 3.61a4.38 4.38 0 01-1.94-.55v.05c0 2.14 1.58 3.93 3.67 4.34a4.46 4.46 0 01-1.93.07 4.46 4.46 0 004.22 3.03 9.07 9.07 0 01-5.6 1.88c-.36 0-.72-.02-1.07-.06A12.56 12.56 0 005 17.49c8.84 0 13.69-7.01 13.69-13.07 0-.2 0-.39-.02-.58A9.32 9.32 0 0023 3z"></path></svg></a>
+      <a href="https://www.instagram.com/spotifyindia/" aria-label="Instagram social link" class="text-gray-400 hover:text-pink-600 transition"><svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M7.75 2h8.5a5.79 5.79 0 015.75 5.75v8.5a5.79 5.79 0 01-5.75 5.75h-8.5A5.79 5.79 0 012 16.25v-8.5A5.79 5.79 0 017.75 2zm0 1.5a4.29 4.29 0 00-4.25 4.25v8.5a4.29 4.29 0 004.25 4.25h8.5a4.29 4.29 0 004.25-4.25v-8.5a4.29 4.29 0 00-4.25-4.25zm8.9 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0zm-4.15.5a4.75 4.75 0 110 9.5 4.75 4.75 0 010-9.5zm0 1.5a3.25 3.25 0 100 6.5 3.25 3.25 0 000-6.5z"></path></svg></a>
+      <a href="https://www.facebook.com/share/1BWjqyVLaG/?mibextid=wwXIfr" aria-label="Facebook social link" class="text-gray-400 hover:text-pink-600 transition"><svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M22 12a10 10 0 10-11.627 9.796v-6.93H8.682v-2.864h1.691V9.412c0-1.674 1.002-2.603 2.538-2.603.727 0 1.487.135 1.487.135v1.643H13.96c-1 0-1.313.623-1.313 1.261v1.52h2.234l-.356 2.864h-1.878v6.929A10 10 0 0022 12z"></path></svg></a>
+    </div>
+  </footer>
+
+  <!-- Mobile menu toggle script -->
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    // Carousel scroll handlers
+    const container = document.querySelector('#download .overflow-x-auto');
+    document.getElementById('prev-btn').onclick = () => {
+      container.scrollBy({left: -240, behavior: 'smooth'});
+    };
+    document.getElementById('next-btn').onclick = () => {
+      container.scrollBy({left: 240, behavior: 'smooth'});
+    };
+  </script>
+
+  <!-- ADVANCED 3D BACKGROUND ANIMATION SCRIPT -->
+  <script>
+    // Initialize canvas for particle animation
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    // Create particles
+    const particles = [];
+    const particleCount = 150;
+    const colors = ['#dc267f', '#1098ad', '#4ea8de', '#ea53b3', '#6a66f4'];
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 3 - 1.5;
+        this.speedY = Math.random() * 3 - 1.5;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+      
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        
+        if (this.x > canvas.width || this.x < 0) {
+          this.speedX = -this.speedX;
+        }
+        if (this.y > canvas.height || this.y < 0) {
+          this.speedY = -this.speedY;
+        }
+      }
+      
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    
+    // Initialize particles
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+    
+    // Connect particles with lines
+    function connectParticles() {
+      const maxDistance = 150;
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < maxDistance) {
+            ctx.beginPath();
+            ctx.strokeStyle = particles[a].color;
+            ctx.globalAlpha = 0.2 * (1 - distance / maxDistance);
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+    
+    // Animation loop
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+      
+      connectParticles();
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Create floating shapes
+    const shapesContainer = document.getElementById('floating-shapes');
+    for (let i = 0; i < 8; i++) {
+      const shape = document.createElement('div');
+      shape.classList.add('shape');
+      
+      // Random properties
+      const size = Math.random() * 300 + 100;
+      const colors = ['#dc267f', '#1098ad', '#4ea8de', '#ea53b3', '#6a66f4'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      shape.style.width = `${size}px`;
+      shape.style.height = `${size}px`;
+      shape.style.background = color;
+      shape.style.left = `${Math.random() * 100}%`;
+      shape.style.top = `${Math.random() * 100}%`;
+      shape.style.animationDelay = `${Math.random() * 20}s`;
+      shape.style.animationDuration = `${Math.random() * 30 + 20}s`;
+      
+      shapesContainer.appendChild(shape);
+    }
+    
+    // Create pulse rings
+    const pulseContainer = document.getElementById('pulse-rings');
+    function createPulseRing() {
+      const ring = document.createElement('div');
+      ring.classList.add('pulse-ring');
+      
+      const size = Math.random() * 300 + 100;
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      
+      ring.style.width = `${size}px`;
+      ring.style.height = `${size}px`;
+      ring.style.left = `${x - size/2}px`;
+      ring.style.top = `${y - size/2}px`;
+      ring.style.animationDelay = `${Math.random() * 2}s`;
+      
+      pulseContainer.appendChild(ring);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        ring.remove();
+      }, 4000);
+    }
+    
+    // Create pulse rings periodically
+    setInterval(createPulseRing, 1000);
+    
+    // Create floating music notes
+    const notesContainer = document.getElementById('floating-notes');
+    const musicNotes = ['♩', '♪', '♫', '♬', '🎵', '🎶'];
+    
+    function createFloatingNote() {
+      const note = document.createElement('div');
+      note.classList.add('floating-note');
+      
+      const noteChar = musicNotes[Math.floor(Math.random() * musicNotes.length)];
+      note.textContent = noteChar;
+      
+      const x = Math.random() * window.innerWidth;
+      const duration = Math.random() * 15 + 15;
+      
+      note.style.left = `${x}px`;
+      note.style.animationDuration = `${duration}s`;
+      note.style.fontSize = `${Math.random() * 20 + 16}px`;
+      
+      notesContainer.appendChild(note);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        note.remove();
+      }, duration * 1000);
+       
+    }
+    
+    // Create floating notes periodically
+    setInterval(createFloatingNote, 1500);
+  </script>
+</body>
+</html>
