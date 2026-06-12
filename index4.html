@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rich Technologies – Advanced Song Brief System</title>
+  <style>
+    :root{
+      --bg:#0d0c18;--panel:#1a1129;--panel-2:#171e38;--ink:#ffffff;
+      --brand-1:#a308ff;--brand-2:#1b9cea;--brand-3:#ff2ea6;
+      --glow:0 0 18px rgb(163 8 255 / 55%);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{background:var(--bg);color:var(--ink);font:15px/1.5 "Poppins",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{border:none;background:none;color:inherit;cursor:pointer}
+    img{max-width:100%;display:block}
+
+    /* -------------------- ULTRA ADVANCED 3D BUTTONS -------------------- */
+    .btn-3d {
+      --btnA: #7d2cff;
+      --btnB: #1b9cea;
+      --glow: #a308ff;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: 1rem 1.8rem;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(135deg, var(--btnA), var(--btnB));
+      box-shadow: 
+        0 6px 0 rgba(0,0,0,0.3),
+        0 8px 24px rgba(0,0,0,0.4),
+        0 0 12px var(--glow),
+        inset 0 -4px 8px rgba(255,255,255,0.25),
+        inset 0 4px 4px rgba(255,255,255,0.2);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      perspective: 500px;
+      z-index: 1;
+    }
+
+    /* 3D depth effect */
+    .btn-3d::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(to bottom, 
+        rgba(255,255,255,0.4) 0%, 
+        rgba(255,255,255,0.1) 50%, 
+        rgba(0,0,0,0.1) 100%);
+      mix-blend-mode: overlay;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    /* neon aura */
+    .btn-3d::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--btnA), var(--btnB));
+      filter: blur(24px);
+      opacity: 0.6;
+      z-index: -2;
+      transition: all 0.4s ease;
+    }
+
+    /* hover + active states */
+    .btn-3d:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow:
+        0 8px 0 rgba(0,0,0,0.3),
+        0 12px 32px rgba(0,0,0,0.5),
+        0 0 22px var(--glow),
+        0 0 40px var(--glow),
+        inset 0 -4px 8px rgba(255,255,255,0.3),
+        inset 0 4px 4px rgba(255,255,255,0.2);
+    }
+    .btn-3d:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow: 
+        0 2px 0 rgba(0,0,0,0.3),
+        0 4px 16px rgba(0,0,0,0.4),
+        inset 0 6px 8px rgba(0,0,0,0.3),
+        inset 0 -2px 4px rgba(255,255,255,0.1);
+    }
+    .btn-3d:hover::after { 
+      opacity: 0.9;
+      inset: -12px;
+    }
+
+    /* click ripple effect */
+    .btn-3d .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* gradient animation */
+    @keyframes neonFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .btn-3d {
+      background-size: 250% 250%;
+      animation: neonFlow 6s ease infinite;
+    }
+
+    /* ---------- THEME VARIANTS ---------- */
+    .btn-3d.primary  { --btnA:#a308ff; --btnB:#1b9cea; --glow:#7d2cff; }
+    .btn-3d.success  { --btnA:#00d18f; --btnB:#0b7d49; --glow:#19c37d; }
+    .btn-3d.danger   { --btnA:#ff3b5e; --btnB:#ff006a; --glow:#ff2ea6; }
+    .btn-3d.warning  { --btnA:#ffb347; --btnB:#ff7b00; --glow:#ffae42; }
+    .btn-3d.logout   { --btnA:#ff1744; --btnB:#d50000; --glow:#ff5252; }
+
+    /* Special nav buttons */
+    .nav-btn {
+      --btnA: #d631de;
+      --btnB: #5d35cb;
+      width: 100%;
+      text-align: left;
+      border-radius: 30px;
+      padding: 14px 18px;
+      margin: 8px 6px;
+      box-shadow:
+        0 5px 0 rgba(75,3,88,0.7),
+        0 8px 16px rgba(75,3,88,0.5),
+        inset 0 -6px 3px rgba(255,255,255,0.35),
+        inset 0 4px 4px rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+    .nav-btn:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 8px 0 rgba(75,3,88,0.7),
+        0 12px 24px rgba(75,3,88,0.6),
+        inset 0 -6px 3px rgba(255,255,255,0.4),
+        inset 0 4px 4px rgba(255,255,255,0.3);
+    }
+    .nav-btn.active {
+      outline: 2px solid rgba(255,255,255,0.3);
+      box-shadow:
+        0 4px 0 rgba(75,3,88,0.7),
+        0 8px 16px rgba(75,3,88,0.5),
+        inset 0 -8px 12px rgba(255,255,255,0.45),
+        inset 0 4px 4px rgba(255,255,255,0.3);
+    }
+
+    /* -------------------- NAVBAR -------------------- */
+    header{position:sticky;top:0;z-index:40;display:flex;gap:24px;align-items:center;justify-content:space-between;padding:12px 36px;background:#fff;color:#111;box-shadow:0 2px 4px rgb(0 0 0 / .12)}
+    .logo{width:122px;height:32px;background:url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/115c7059-a1f9-4379-bc05-3e7620db8e95.png') center/contain no-repeat}
+    .menu{display:flex;gap:28px;font-weight:700}
+    .menu a{color:#1c1c1c}
+    .menu a.active,.menu a:hover{color:#3270d3}
+    .profile{display:flex;align-items:center;gap:10px;font-weight:700}
+    .profile img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid #222}
+
+    /* -------------------- LAYOUT -------------------- */
+    .app{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px)}
+
+    /* -------------------- LEFT SIDEBAR -------------------- */
+    .sidebar{position:relative;z-index:10;padding:36px 12px;background:#131924;border-right:1px solid rgb(255 255 255 / .04)}
+    .side-title{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#8aa0ff;margin:0 0 10px 12px;opacity:.7}
+
+    /* -------------------- PANELS -------------------- */
+    .panel{position:relative;overflow:hidden;padding:36px 44px}
+    .panel.hidden{display:none}
+    .dashboard{border-radius:0 56px 0 0;background:var(--panel)}
+    .song{border-radius:0 56px 0 0;background:linear-gradient(161deg,#151b35,#1d254f)}
+
+    /* -------------------- 3D BACKGROUND EFFECTS -------------------- */
+    .bg-beam{position:absolute;inset:-20% -10%;z-index:0;background:linear-gradient(110deg,transparent 0 35%, rgb(27 156 234 / .28) 50%, rgb(163 8 255 / .35) 65%, transparent 82%);background-size:200% 100%;animation:beam 8s linear infinite}
+    @keyframes beam{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    
+    .blob{position:absolute;width:380px;height:380px;border-radius:50%;filter:blur(30px);opacity:.45;z-index:0}
+    .blob.pink{background:radial-gradient(circle at 30% 30%, #ff2ea6, transparent 60%)}
+    .blob.cyan{background:radial-gradient(circle at 70% 70%, #00d1ff, transparent 60%)}
+    .blob.violet{background:radial-gradient(circle at 40% 60%, #7d2cff, transparent 60%)}
+    .blob.pink{top:10%;left:5%;animation:float1 9s ease-in-out infinite alternate}
+    .blob.cyan{bottom:6%;right:10%;animation:float2 11s ease-in-out infinite alternate}
+    .blob.violet{top:40%;right:35%;animation:float3 13s ease-in-out infinite alternate}
+    @keyframes float1{to{transform:translate(40px,-30px)}}
+    @keyframes float2{to{transform:translate(-50px,-20px)}}
+    @keyframes float3{to{transform:translate(0,40px)}}
+    
+    .stars{position:absolute;inset:0;z-index:0;pointer-events:none}
+
+    /* -------------------- DASHBOARD CONTENT -------------------- */
+    .cards{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:22px;margin:8px 0 26px 0}
+    .card{min-width:160px;flex:1;background:linear-gradient(145deg,#312143 15%,#4d4771 90%);border-radius:14px;padding:18px;text-align:center;box-shadow:inset 0 -5px 3px rgb(255 255 255 / .2), 0 5px 8px rgb(114 92 213 / .6);}
+    .card .num{display:block;font-size:32px;font-weight:900;margin-bottom:6px}
+    .card .desc{opacity:.8}
+
+    .status{position:relative;z-index:1;width:min(560px,100%);display:flex;flex-direction:column;gap:12px}
+    .row{display:grid;grid-template-columns:1.4fr 1fr .9fr;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 15px 25px rgb(195 178 255 / .25), inset 0 -4px 3px rgb(255 255 255 / .25), inset 0 5px 6px rgb(75 20 201 / .35)}
+    .row.h{pointer-events:none;background:linear-gradient(270deg,#261329,#1d1139);color:#76629e;font-weight:800;text-transform:uppercase}
+    .cell{display:flex;align-items:center;justify-content:center;padding:12px;border-right:1px solid #392f47}
+    .cell:last-child{border-right:none}
+    .user{justify-content:flex-start;padding-left:16px;background:linear-gradient(270deg,#205b42,#0f3b31);color:#c9ffe6;text-shadow:0 0 6px #3ef5b2aa;font-weight:800}
+    .pending{background:linear-gradient(270deg,#dbad4a,#efa64c);color:#4b3100}
+    .complete{background:linear-gradient(270deg,#8c7efa,#ab8efc);color:#221e69}
+    .progress{background:linear-gradient(270deg,#ef553d,#f57c53);color:#fff}
+    .view .btn-3d{--btnA:#19c37d;--btnB:#0b7d49;padding:.55rem .9rem;border-radius:10px}
+
+    /* -------------------- SONG PANEL -------------------- */
+    .form{position:relative;z-index:1;display:flex;flex-direction:column;gap:24px;font-weight:600}
+    .frow{display:grid;grid-template-columns:190px 1fr;gap:16px;align-items:center}
+    .flabel{width:170px;justify-self:end;color:#fff;text-transform:lowercase;font-weight:900;letter-spacing:.14em;padding:10px 12px;border-radius:10px;background:linear-gradient(270deg,#0f376c 10%,#1b437d 90%);box-shadow:0 1px 13px rgb(10 245 255 / .45)}
+    .input,.textarea,select{width:100%;border:none;border-radius:10px;padding:12px 14px;font:600 14px/1.3 inherit;color:#111;outline:3px solid transparent;box-shadow:inset 0 0 9px #92a6f0cc, inset 0 0 15px #3469f099, 0 0 15px #040549cc;background:#e5eeff}
+    .textarea{min-height:90px;resize:vertical}
+    .audio{display:flex;align-items:center;background:#92a9efdd;border-radius:12px;padding:6px 10px;box-shadow:inset 0 0 15px #360cdc, inset 0 0 20px #061644, 0 0 12px #2e2eeb}
+    .select-wrap{position:relative}
+    .select-wrap::after{content:"v";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:900;color:#0a81c1;text-shadow:0 0 3px #fff}
+    .create{justify-self:end}
+
+    /* -------------------- DECOR RIGHT BAR -------------------- */
+    .decor{position:absolute;top:0;right:0;height:100%;width:84px;border-radius:30px 0 0 30px;background:linear-gradient(135deg,var(--brand-2),var(--brand-1),#f1ffff);box-shadow:0 0 6px #a308ffcc, inset 0 0 10px #3270d3ee, 10px 0 20px #3270d3ee;z-index:1}
+
+    /* -------------------- TOAST -------------------- */
+    .toast{position:fixed;right:22px;bottom:22px;padding:14px 18px;border-radius:12px;background:#0f2027;color:#d4ffee;box-shadow:0 8px 30px rgb(0 0 0 / .5);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s ease, transform .25s ease;z-index:50}
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    /* -------------------- RESPONSIVE -------------------- */
+    @media (max-width: 980px){
+      .app{grid-template-columns:1fr}
+      .sidebar{display:flex;gap:10px;overflow:auto;border-right:0;border-bottom:1px solid rgb(255 255 255 / .06)}
+      .panel{border-radius:0}
+      .frow{grid-template-columns:140px 1fr}
+      .decor{display:none}
+    }
+
+    /* -------------------- NEW ENHANCEMENTS -------------------- */
+    
+    /* Advanced 3D Table with Hover Effects */
+    .status .row:not(.h) {
+      transition: all 0.3s ease;
+      transform: translateZ(0);
+    }
+    
+    .status .row:not(.h):hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 20px 30px rgba(195, 178, 255, 0.35), 
+                 inset 0 -4px 3px rgba(255, 255, 255, 0.25), 
+                 inset 0 5px 6px rgba(75, 20, 201, 0.4);
+      z-index: 2;
+    }
+    
+    /* Enhanced Cards with Hover Effects */
+    .card {
+      transition: all 0.3s ease;
+      transform: translateZ(0);
+      cursor: pointer;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px) rotateX(5deg);
+      box-shadow: inset 0 -8px 6px rgba(255, 255, 255, 0.25), 
+                  0 12px 20px rgba(114, 92, 213, 0.8);
+    }
+    
+    /* Advanced Input Focus Effects */
+    .input:focus, .textarea:focus, select:focus {
+      outline: 3px solid rgba(163, 8, 255, 0.5);
+      box-shadow: inset 0 0 15px #92a6f0, 
+                  inset 0 0 25px #3469f0, 
+                  0 0 20px #040549, 
+                  0 0 15px #7d2cff;
+    }
+    
+    /* Floating Animation for Decor Elements */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+    
+    .decor {
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    /* Particle Effects */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat 15s linear infinite;
+    }
+    
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(100%) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100%) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    /* Advanced User Profile */
+    .profile {
+      position: relative;
+    }
+    
+    .profile::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
+      border-radius: 2px;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .profile:hover::after {
+      transform: scaleX(1);
+    }
+    
+    /* Glowing Text Effects */
+    .glow-text {
+      text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+      animation: textPulse 2s infinite alternate;
+    }
+    
+    @keyframes textPulse {
+      from { text-shadow: 0 0 10px currentColor, 0 0 20px currentColor; }
+      to { text-shadow: 0 0 15px currentColor, 0 0 30px currentColor, 0 0 40px currentColor; }
+    }
+    
+    /* Advanced Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(13, 12, 24, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: var(--panel);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 50px rgba(163, 8, 255, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(var(--brand-1), var(--brand-2));
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(var(--brand-2), var(--brand-3));
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header>
+    <div class="logo" aria-label="Rich Technologies company logo"></div>
+    <nav class="menu" aria-label="Primary navigation">
+      <a class="active" data-goto="dashboard">Home</a>
+      <a data-goto="song">Songs</a>
+      <a>Services</a>
+      <a>Team</a>
+      <a>Features</a>
+    </nav>
+    <div class="profile"><span>divyanshi</span><img src="WhatsApp Image 2025-08-31 at 10.38.21 PM.jpeg" alt="user"/></div>
+  </header>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-title">dashboard</div>
+      <button class="nav-btn btn-3d primary active" data-goto="dashboard">Home</button>
+      <button class="nav-btn btn-3d primary" data-goto="song">Song Creation</button>
+      <button class="nav-btn btn-3d">Manage Users</button>
+      <button class="nav-btn btn-3d">Submissions</button>
+      <button class="nav-btn btn-3d">Notifications</button>
+      <button class="nav-btn btn-3d logout">Logout</button>
+    </aside>
+
+    <!-- DASHBOARD PANEL -->
+    <section id="dashboard" class="panel dashboard">
+      <div class="bg-beam" aria-hidden="true"></div>
+      <div class="blob pink" aria-hidden="true"></div>
+      <div class="blob cyan" aria-hidden="true"></div>
+      <div class="blob violet" aria-hidden="true"></div>
+      <div class="particles" id="particles1"></div>
+      <canvas class="stars" id="stars1"></canvas>
+
+      <div class="decor" aria-hidden="true"></div>
+
+      <div class="cards" aria-label="stats">
+        <div class="card"><span class="num" data-count="12">0</span><div class="desc">pending submissions</div></div>
+        <div class="card"><span class="num" data-count="54">0</span><div class="desc">completed songs</div></div>
+        <div class="card"><span class="num" data-count="120">0</span><div class="desc">total users</div></div>
+        <div class="card"><span class="num" data-count="9">0</span><div class="desc">songs in process</div></div>
+      </div>
+
+      <div class="status" aria-label="user table">
+        <div class="row h"><div class="cell">users</div><div class="cell">status</div><div class="cell">action</div></div>
+        <div id="rows"></div>
+      </div>
+    </section>
+
+    <!-- SONG CREATION PANEL -->
+    <section id="song" class="panel song hidden">
+      <div class="bg-beam" aria-hidden="true"></div>
+      <div class="blob pink" aria-hidden="true" style="left:8%;top:18%"></div>
+      <div class="blob cyan" aria-hidden="true" style="right:8%;bottom:10%"></div>
+      <div class="particles" id="particles2"></div>
+      <canvas class="stars" id="stars2"></canvas>
+
+      <div class="decor" aria-hidden="true"></div>
+
+      <form class="form" onsubmit="return false">
+        <div class="frow">
+          <div class="flabel">vocals</div>
+          <div class="audio"><audio controls preload="metadata" src="https://www.kozco.com/tech/piano2-CoolEdit.mp3"></audio></div>
+        </div>
+        <div class="frow">
+          <label class="flabel" for="lyrics">lyrics</label>
+          <textarea id="lyrics" class="textarea" placeholder="enter the lyrics for the song....."></textarea>
+        </div>
+        <div class="frow">
+          <label class="flabel" for="stype">song type</label>
+          <div class="select-wrap"><select id="stype" class="input">
+            <option disabled selected>select song type .....</option>
+            <option>pop</option><option>rock</option><option>hip hop</option><option>jazz</option><option>electronic</option><option>classical</option><option>country</option>
+          </select></div>
+        </div>
+        <div class="frow">
+          <div class="flabel">reference beat</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="file" class="input"/>
+            <button class="btn-3d warning">Upload</button>
+          </div>
+        </div>
+        <div class="frow create">
+          <button id="createBtn" class="btn-3d danger" style="font-size:18px;padding:14px 28px;border-radius:24px">Create Song</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- MODAL FOR USER DETAILS -->
+  <div class="modal" id="userModal">
+    <div class="modal-content">
+      <h2 class="glow-text" style="color: var(--brand-1); margin-bottom: 20px;">User Details</h2>
+      <div id="modalUserContent"></div>
+      <button class="btn-3d primary" style="margin-top: 20px;" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">✅ Song created successfully.</div>
+
+  <script>
+    // -------------------- SIMPLE ROUTER --------------------
+    const panels={dashboard:document.getElementById('dashboard'),song:document.getElementById('song')};
+    function show(id){
+      for(const k in panels){
+        panels[k].classList.toggle('hidden',k!==id);
+      }
+      document.querySelectorAll('[data-goto]').forEach(a=>a.classList.toggle('active',a.dataset.goto===id));
+      document.querySelectorAll('.nav-btn').forEach(btn=>{
+        btn.classList.toggle('active',btn.dataset.goto===id);
+      });
+    }
+    document.querySelectorAll('[data-goto]').forEach(el=>el.addEventListener('click',(e)=>{
+      show(el.dataset.goto);
+      createRipple(e);
+    }));
+
+    // -------------------- COUNT UP --------------------
+    const ease=(t)=>1- Math.pow(1-t,4);
+    document.querySelectorAll('.num').forEach(el=>{
+      const end=+el.dataset.count;
+      let t0=null;
+      function step(ts){
+        if(!t0)t0=ts;
+        const p=Math.min(1,(ts-t0)/1200);
+        el.textContent=Math.round(end*ease(p));
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+
+    // -------------------- TABLE: dynamic rows with enhanced functionality --------------------
+    let data = [
+      {name:'diya', status:'pending', email:'diya@example.com',joinDate:'2023-05-12'},
+      {name:'priya', status:'complete', email:'priya@example.com',joinDate:'2023-02-28'},
+      {name:'divya', status:'progress', email:'divya@example.com',joinDate:'2023-07-03'}
+    ];
+    
+    const rows=document.getElementById('rows');
+    
+    function renderTable() {
+      rows.innerHTML = data.map((d, index) => `
+        <div class="row" data-id="${index}">
+          <div class="cell user">${d.name}</div>
+          <div class="cell ${d.status}">${d.status.replace('progress','in progress')}</div>
+          <div class="cell view">
+            <button class="btn-3d success view-user" data-id="${index}">view</button>
+            <button class="btn-3d warning edit-user" data-id="${index}">edit</button>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add event listeners to view buttons
+      document.querySelectorAll('.view-user').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = btn.dataset.id;
+          showUserModal(data[id]);
+          createRipple(e);
+        });
+      });
+      
+      // Add event listeners to edit buttons
+      document.querySelectorAll('.edit-user').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = btn.dataset.id;
+          editUser(id);
+          createRipple(e);
+        });
+      });
+    }
+    
+    function showUserModal(user) {
+      const modal = document.getElementById('userModal');
+      const content = document.getElementById('modalUserContent');
+      
+      content.innerHTML = `
+        <div style="display: grid; gap: 10px;">
+          <div><strong>Name:</strong> ${user.name}</div>
+          <div><strong>Email:</strong> ${user.email}</div>
+          <div><strong>Role:</strong> ${user.role}</div>
+          <div><strong>Join Date:</strong> ${user.joinDate}</div>
+          <div><strong>Status:</strong> <span class="${user.status}">${user.status.replace('progress','in progress')}</span></div>
+        </div>
+      `;
+      
+      modal.classList.add('active');
+    }
+    
+    function closeModal() {
+      document.getElementById('userModal').classList.remove('active');
+    }
+    
+    function editUser(id) {
+      const newName = prompt('Enter new name:', data[id].name);
+      if (newName !== null) {
+        data[id].name = newName;
+        renderTable();
+        
+        // Show toast notification
+        const toast = document.getElementById('toast');
+        toast.textContent = `✅ ${newName}'s profile updated successfully.`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1800);
+      }
+    }
+    
+    // Initialize table
+    renderTable();
+
+    // -------------------- RIPPLE EFFECT --------------------
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const circle = document.createElement("span");
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+      
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+      circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+      circle.classList.add("ripple");
+      
+      const ripple = button.getElementsByClassName("ripple")[0];
+      if (ripple) ripple.remove();
+      
+      button.appendChild(circle);
+    }
+    
+    // Add ripple to all buttons
+    document.querySelectorAll('.btn-3d').forEach(button => {
+      button.addEventListener('click', createRipple);
+    });
+
+    // -------------------- TOAST on create --------------------
+    document.getElementById('createBtn').addEventListener('click',(e)=>{
+      createRipple(e);
+      const t=document.getElementById('toast');
+      t.textContent = "✅ Song created successfully.";
+      t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),1800);
+    });
+
+    // -------------------- STARFIELD --------------------
+    function starfield(canvas){
+      const c=canvas, ctx=c.getContext('2d');
+      let w,h,stars=[];
+      
+      function resize(){
+        w=c.width=c.clientWidth;
+        h=c.height=c.clientHeight;
+        stars=Array.from({length:80},()=>({
+          x:Math.random()*w,
+          y:Math.random()*h,
+          r:Math.random()*1.8+0.5,
+          s:Math.random()*0.6+0.2
+        }));
+      }
+      
+      resize();
+      window.addEventListener('resize',resize);
+      
+      function tick(){
+        ctx.clearRect(0,0,w,h);
+        for(const s of stars){
+          ctx.beginPath();
+          ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,255,255,0.85)';
+          ctx.fill();
+          s.x+=s.s*0.4;
+          if(s.x> w+4) s.x=-4;
+        }
+        requestAnimationFrame(tick);
+      }
+      
+      tick();
+    }
+    
+    starfield(document.getElementById('stars1'));
+    starfield(document.getElementById('stars2'));
+
+    // -------------------- PARTICLE EFFECT --------------------
+    function createParticles(container) {
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random properties
+        const size = Math.random() * 5 + 2;
+        const posX = Math.random() * 100;
+        const delay = Math.random() * 15;
+        const duration = 10 + Math.random() * 20;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+        
+        // Random color from brand colors
+        const colors = ['#a308ff', '#1b9cea', '#ff2ea6', '#00d18f', '#ffb347'];
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        container.appendChild(particle);
+      }
+    }
+    
+    createParticles(document.getElementById('particles1'));
+    createParticles(document.getElementById('particles2'));
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('userModal');
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Add new user functionality
+    const addUserBtn = document.createElement('button');
+    addUserBtn.textContent = 'Add User';
+    addUserBtn.className = 'btn-3d primary';
+    addUserBtn.style.marginTop = '20px';
+    addUserBtn.addEventListener('click', () => {
+      const name = prompt('Enter new user name:');
+      if (name) {
+        data.push({
+          name: name,
+          status: 'pending',
+          email: `${name.toLowerCase()}@example.com`,
+          role: 'New User',
+          joinDate: new Date().toISOString().split('T')[0]
+        });
+        renderTable();
+        
+        // Update user count
+        document.querySelector('.card:nth-child(3) .num').dataset.count = data.length;
+        document.querySelectorAll('.num').forEach(el => {
+          const end = +el.dataset.count;
+          el.textContent = end;
+        });
+      }
+    });
+    
+    document.querySelector('.status').appendChild(addUserBtn);
+
+    // default route
+    show('dashboard');
+  </script>
+</body>
+</html>
